@@ -5,9 +5,10 @@ const Button = ({ type, handleClick }) => (
 );
 
 const Statistic = ({ name, data }) => (
-  <p>
-    {name} {data}
-  </p>
+  <tr>
+    <td>{name}</td>
+    <td>{data}</td>
+  </tr>
 );
 
 const Statistics = (props) => {
@@ -15,15 +16,25 @@ const Statistics = (props) => {
   return (
     <div>
       <h1>statistics</h1>
-      {Object.keys(props.stats).map((key, index) => {
-        if (key === "total" && props.stats.total.length !== 0) {
-          return (
-            <Statistic key={index} name={key} data={props.stats[key].length} />
-          );
-        } else {
-          return <Statistic key={index} name={key} data={props.stats[key]} />;
-        }
-      })}
+      <table>
+        <tbody>
+          {Object.keys(props.stats).map((key, index) => {
+            if (key === "total" && props.stats.total.length !== 0) {
+              return (
+                <Statistic
+                  key={index}
+                  name={key}
+                  data={props.stats[key].length}
+                />
+              );
+            } else {
+              return (
+                <Statistic key={index} name={key} data={props.stats[key]} />
+              );
+            }
+          })}
+        </tbody>
+      </table>
     </div>
   );
 };
