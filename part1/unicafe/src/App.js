@@ -1,5 +1,15 @@
 import React, { useState, useEffect } from "react";
 
+const Button = ({ type, handleClick }) => (
+  <button onClick={handleClick}>{type}</button>
+);
+
+const Statistic = ({ name, data }) => (
+  <p>
+    {name} {data}
+  </p>
+);
+
 const Statistics = (props) => {
   console.log();
   return (
@@ -8,16 +18,10 @@ const Statistics = (props) => {
       {Object.keys(props.stats).map((key, index) => {
         if (key === "total" && props.stats.total.length !== 0) {
           return (
-            <p key={index}>
-              {key} {props.stats[key].length}
-            </p>
+            <Statistic key={index} name={key} data={props.stats[key].length} />
           );
         } else {
-          return (
-            <p key={index}>
-              {key} {props.stats[key]}
-            </p>
-          );
+          return <Statistic key={index} name={key} data={props.stats[key]} />;
         }
       })}
     </div>
@@ -80,9 +84,9 @@ const App = () => {
   return (
     <div>
       <h1>give feedback</h1>
-      <button onClick={handleGoodClick}>good</button>
-      <button onClick={handleNeutralClick}>neutral</button>
-      <button onClick={handleBadClick}>bad</button>
+      <Button handleClick={handleGoodClick} type={"good"} />
+      <Button handleClick={handleNeutralClick} type={"neutral"} />
+      <Button handleClick={handleBadClick} type={"bad"} />
       {feedback}
     </div>
   );
