@@ -1,6 +1,16 @@
 import React from "react";
 import ReactDOM from "react-dom";
 
+const Course = ({ course }) => {
+  return (
+    <div>
+      <Header course={course} />
+      <Content course={course} />
+      <Total course={course} />
+    </div>
+  );
+};
+
 const Header = ({ course }) => {
   return <h1>{course.name}</h1>;
 };
@@ -50,13 +60,7 @@ const App = () => {
     ],
   };
 
-  return (
-    <div>
-      <Header course={course} />
-      <Content course={course} />
-      <Total course={course} />
-    </div>
-  );
+  return <Course course={course} />;
 };
 
 export default App;
