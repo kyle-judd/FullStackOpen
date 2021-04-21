@@ -33,19 +33,46 @@ const App = () => {
     }
   };
 
+  const updatePerson = (person) => {
+    if (
+      window.confirm(
+        `${person.name} is already added to the phonebook. This will update their number. Are you sure?`
+      )
+    ) {
+      phonebookService
+        .updatePerson(person.id, newPerson)
+        .then((returnedPerson) => {
+          const updatedArr = persons.map((p) =>
+            p.id !== person.id ? p : returnedPerson
+          );
+          console.log(updatedArr);
+          setPersons(updatedArr);
+        });
+    }
+  };
+
+  const createNewPerson = () => {
+    phonebookService.createPerson(newPerson).then((newPerson) => {
+      setPersons(persons.concat(newPerson));
+      setNewPerson({});
+    });
+  };
+
   const onQueryChangeHandler = (event) => {
     setQuery(event.target.value);
   };
 
   const onSubmitHandler = (event) => {
     event.preventDefault();
-    if (persons.some((person) => person.name === newPerson.name)) {
-      alert(`${newPerson.name} already exists!`);
+    if (
+      persons.some((person) => {
+        if (person.name === newPerson.name) {
+          updatePerson(person);
+        }
+      })
+    ) {
     } else {
-      phonebookService.createPerson(newPerson).then((newPerson) => {
-        setPersons(persons.concat(newPerson));
-        setNewPerson({});
-      });
+      createNewPerson();
     }
   };
 

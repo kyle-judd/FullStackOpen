@@ -8,7 +8,7 @@ const Persons = ({ persons, query, click }) => (
         query === ""
       ) {
         return (
-          <div key={person.name}>
+          <div key={person.id}>
             <p>
               {person.name} {person.number}
             </p>
@@ -16,7 +16,7 @@ const Persons = ({ persons, query, click }) => (
           </div>
         );
       }
-      return;
+      return null;
     })}
   </div>
 );

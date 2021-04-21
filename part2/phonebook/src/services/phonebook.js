@@ -10,7 +10,10 @@ const createPerson = (newPerson) => {
 };
 
 const updatePerson = (id, newPerson) => {
-  return axios.put(`${baseUrl}/${id}`).then((res) => res.data);
+  return axios.put(`${baseUrl}/${id}`, newPerson).then((res) => {
+    console.log(res);
+    return res.data;
+  });
 };
 
 const deletePerson = (id) => {
@@ -20,4 +23,6 @@ const deletePerson = (id) => {
   });
 };
 
-export default { getAll, createPerson, updatePerson, deletePerson };
+const methods = { getAll, createPerson, updatePerson, deletePerson };
+
+export default methods;
