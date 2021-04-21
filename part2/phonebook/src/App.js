@@ -1,35 +1,29 @@
 import React, { useState, useEffect } from "react";
-import axios from "axios";
+import phonebookService from "./services/phonebook";
 import Form from "./components/Form";
 import Filter from "./components/Filter";
 import Persons from "./components/Persons";
 
 const App = () => {
-  const [persons, setPersons] = useState([
-    { name: "Arto Hellas", number: "040-123456" },
-    { name: "Ada Lovelace", number: "39-44-5323523" },
-    { name: "Dan Abramov", number: "12-43-234345" },
-    { name: "Mary Poppendieck", number: "39-23-6423122" },
-  ]);
-  const [newName, setNewName] = useState("");
-  const [newPhoneNumber, setNewPhoneNumber] = useState("");
+  const [persons, setPersons] = useState([]);
+  const [newPerson, setNewPerson] = useState({});
   const [query, setQuery] = useState("");
 
   useEffect(
-    () =>
-      axios.get("http://localhost:3001/persons").then((res) => {
-        console.log(res);
-        setPersons(res.data);
-      }),
+    () => phonebookService.getAll().then((persons) => setPersons(persons)),
     []
   );
 
   const onNameChangeHandler = (event) => {
-    setNewName(event.target.value);
+    const newPersonDTO = { ...newPerson, name: event.target.value };
+    console.log(newPersonDTO);
+    setNewPerson(newPersonDTO);
   };
 
   const onPhoneNumberChangeHandler = (event) => {
-    setNewPhoneNumber(event.target.value);
+    const newPersonDTO = { ...newPerson, number: event.target.value };
+    console.log(newPersonDTO);
+    setNewPerson(newPersonDTO);
   };
 
   const onQueryChangeHandler = (event) => {
@@ -38,10 +32,13 @@ const App = () => {
 
   const onSubmitHandler = (event) => {
     event.preventDefault();
-    if (persons.some((person) => person.name === newName)) {
-      alert(`${newName} already exists!`);
+    if (persons.some((person) => person.name === newPerson.name)) {
+      alert(`${newPerson.name} already exists!`);
     } else {
-      setPersons(persons.concat({ name: newName, number: newPhoneNumber }));
+      phonebookService.createPerson(newPerson).then((newPerson) => {
+        setPersons(persons.concat(newPerson));
+        setNewPerson({});
+      });
     }
   };
 
