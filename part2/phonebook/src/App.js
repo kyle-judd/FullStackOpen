@@ -3,11 +3,13 @@ import phonebookService from "./services/phonebook";
 import Form from "./components/Form";
 import Filter from "./components/Filter";
 import Persons from "./components/Persons";
+import Notification from "./components/Notifcation";
 
 const App = () => {
   const [persons, setPersons] = useState([]);
   const [newPerson, setNewPerson] = useState({});
   const [query, setQuery] = useState("");
+  const [message, setMessage] = useState({ type: null, content: null });
 
   useEffect(
     () => phonebookService.getAll().then((persons) => setPersons(persons)),
@@ -28,7 +30,9 @@ const App = () => {
 
   const deletePersonHandler = (person) => {
     if (window.confirm(`Are you sure you want to delete ${person.name}?`)) {
-      phonebookService.deletePerson(person.id);
+      phonebookService
+        .deletePerson(person.id)
+        .catch((err) => setMessage({ type: "error", content: err }));
       setPersons(persons.filter((p) => p.id !== person.id));
     }
   };
@@ -54,6 +58,13 @@ const App = () => {
   const createNewPerson = () => {
     phonebookService.createPerson(newPerson).then((newPerson) => {
       setPersons(persons.concat(newPerson));
+      setMessage({
+        type: "success",
+        content: `Successfully added ${newPerson.name}`,
+      });
+      setTimeout(() => {
+        setMessage({ type: null, content: null });
+      }, 3000);
       setNewPerson({});
     });
   };
@@ -79,6 +90,7 @@ const App = () => {
   return (
     <div>
       <h2>Phonebook</h2>
+      <Notification message={message} />
       <Filter onQueryChangeHandler={onQueryChangeHandler} />
       <h1>add a new</h1>
       <Form

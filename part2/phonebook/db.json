@@ -16,14 +16,24 @@
       "id": 3
     },
     {
-      "name": "Mary Poppendieck",
-      "number": "39-23-6423122",
-      "id": 4
-    },
-    {
       "name": "Arto Hellas",
       "number": "5713455130",
       "id": 5
+    },
+    {
+      "name": "Test Person",
+      "number": "5713455130",
+      "id": 6
+    },
+    {
+      "name": "test person 2",
+      "number": "513289371",
+      "id": 7
+    },
+    {
+      "name": "Mary Poppendieck",
+      "number": "12384709312",
+      "id": 8
     }
   ]
 }
