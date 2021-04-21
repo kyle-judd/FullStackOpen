@@ -1,4 +1,5 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
+import axios from "axios";
 import Form from "./components/Form";
 import Filter from "./components/Filter";
 import Persons from "./components/Persons";
@@ -13,6 +14,15 @@ const App = () => {
   const [newName, setNewName] = useState("");
   const [newPhoneNumber, setNewPhoneNumber] = useState("");
   const [query, setQuery] = useState("");
+
+  useEffect(
+    () =>
+      axios.get("http://localhost:3001/persons").then((res) => {
+        console.log(res);
+        setPersons(res.data);
+      }),
+    []
+  );
 
   const onNameChangeHandler = (event) => {
     setNewName(event.target.value);
