@@ -14,7 +14,10 @@ const updatePerson = (id, newPerson) => {
 };
 
 const deletePerson = (id) => {
-  return axios.delete(`${baseUrl}/${id}`).then((res) => res.data);
+  return axios.delete(`${baseUrl}/${id}`).then((res) => {
+    console.log(res);
+    return res.data;
+  });
 };
 
 export default { getAll, createPerson, updatePerson, deletePerson };

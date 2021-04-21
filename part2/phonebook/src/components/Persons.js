@@ -1,6 +1,6 @@
 import React from "react";
 
-const Persons = ({ persons, query }) => (
+const Persons = ({ persons, query, click }) => (
   <div>
     {persons.map((person) => {
       if (
@@ -8,9 +8,12 @@ const Persons = ({ persons, query }) => (
         query === ""
       ) {
         return (
-          <p key={person.name}>
-            {person.name} {person.number}
-          </p>
+          <div key={person.name}>
+            <p>
+              {person.name} {person.number}
+            </p>
+            <button onClick={() => click(person)}>delete</button>
+          </div>
         );
       }
       return;

@@ -26,6 +26,13 @@ const App = () => {
     setNewPerson(newPersonDTO);
   };
 
+  const deletePersonHandler = (person) => {
+    if (window.confirm(`Are you sure you want to delete ${person.name}?`)) {
+      phonebookService.deletePerson(person.id);
+      setPersons(persons.filter((p) => p.id !== person.id));
+    }
+  };
+
   const onQueryChangeHandler = (event) => {
     setQuery(event.target.value);
   };
@@ -53,7 +60,7 @@ const App = () => {
         handlePhoneNumberChange={onPhoneNumberChangeHandler}
       />
       <h2>Numbers</h2>
-      <Persons persons={persons} query={query} />
+      <Persons persons={persons} query={query} click={deletePersonHandler} />
     </div>
   );
 };
