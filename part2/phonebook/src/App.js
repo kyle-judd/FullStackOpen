@@ -5,13 +5,16 @@ const App = () => {
   const [newName, setNewName] = useState("");
 
   const onNameChangeHandler = (event) => {
-    console.log(event.target.value);
     setNewName(event.target.value);
   };
 
   const onSubmitHandler = (event) => {
     event.preventDefault();
-    setPersons(persons.concat({ name: newName }));
+    if (persons.some((person) => person.name === newName)) {
+      alert(`${newName} already exists!`);
+    } else {
+      setPersons(persons.concat({ name: newName }));
+    }
   };
 
   return (
