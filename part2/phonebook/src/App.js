@@ -11,20 +11,22 @@ const App = () => {
   const [query, setQuery] = useState("");
   const [message, setMessage] = useState({ type: null, content: null });
 
-  useEffect(
-    () => phonebookService.getAll().then((persons) => setPersons(persons)),
-    []
-  );
+  const fetchAllAndSet = () =>
+    phonebookService
+      .getAll()
+      .then((returnedPersons) => setPersons(returnedPersons));
+
+  useEffect(() => {
+    fetchAllAndSet();
+  }, []);
 
   const onNameChangeHandler = (event) => {
     const newPersonDTO = { ...newPerson, name: event.target.value };
-    console.log(newPersonDTO);
     setNewPerson(newPersonDTO);
   };
 
   const onPhoneNumberChangeHandler = (event) => {
     const newPersonDTO = { ...newPerson, number: event.target.value };
-    console.log(newPersonDTO);
     setNewPerson(newPersonDTO);
   };
 
@@ -32,8 +34,8 @@ const App = () => {
     if (window.confirm(`Are you sure you want to delete ${person.name}?`)) {
       phonebookService
         .deletePerson(person.id)
+        .then(fetchAllAndSet)
         .catch((err) => setMessage({ type: "error", content: err }));
-      setPersons(persons.filter((p) => p.id !== person.id));
     }
   };
 
@@ -45,28 +47,28 @@ const App = () => {
     ) {
       phonebookService
         .updatePerson(person.id, newPerson)
-        .then((returnedPerson) => {
-          const updatedArr = persons.map((p) =>
-            p.id !== person.id ? p : returnedPerson
-          );
-          console.log(updatedArr);
-          setPersons(updatedArr);
-        });
+        .then(fetchAllAndSet)
+        .catch((err) => setMessage({ type: "error", content: err }));
     }
   };
 
   const createNewPerson = () => {
-    phonebookService.createPerson(newPerson).then((newPerson) => {
-      setPersons(persons.concat(newPerson));
-      setMessage({
-        type: "success",
-        content: `Successfully added ${newPerson.name}`,
-      });
-      setTimeout(() => {
-        setMessage({ type: null, content: null });
-      }, 3000);
-      setNewPerson({});
-    });
+    phonebookService
+      .createPerson(newPerson)
+      .then(() => {
+        fetchAllAndSet();
+        setMessage({
+          type: "success",
+          content: `Successfully added ${newPerson.name}`,
+        });
+        setTimeout(() => {
+          setMessage({ type: null, content: null });
+        }, 3000);
+        setNewPerson({});
+      })
+      .catch((error) =>
+        setMessage({ type: "error", content: "Invalid length" })
+      );
   };
 
   const onQueryChangeHandler = (event) => {
@@ -75,16 +77,10 @@ const App = () => {
 
   const onSubmitHandler = (event) => {
     event.preventDefault();
-    if (
-      persons.some((person) => {
-        if (person.name === newPerson.name) {
-          updatePerson(person);
-        }
-      })
-    ) {
-    } else {
-      createNewPerson();
-    }
+    const foundPerson = persons.find(
+      (person) => person.name === newPerson.name
+    );
+    foundPerson ? updatePerson(foundPerson) : createNewPerson();
   };
 
   return (
