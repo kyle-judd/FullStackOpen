@@ -60,6 +60,17 @@ test("likes cannot be missing from blog object", async () => {
   const blogsAtEnd = await helpers.blogsInDb();
   expect(blogsAtEnd).toHaveLength(helpers.initialBlogs.length);
 });
+
+test("title and url cannot be missing from blog object", async () => {
+  const withOutTitleAndURL = {
+    author: "example",
+    likes: 24,
+  };
+
+  await api.post("/api/blogs").send(withOutTitleAndURL).expect(400);
+  const blogsAtEnd = await helpers.blogsInDb();
+  expect(blogsAtEnd).toHaveLength(helpers.initialBlogs.length);
+});
 afterAll(() => {
   mongoose.connection.close();
 });

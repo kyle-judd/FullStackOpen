@@ -8,8 +8,10 @@ blogRouter.get("/", async (request, response, next) => {
 
 blogRouter.post("/", async (request, response, next) => {
   const body = request.body;
-  if (!body.likes) {
-    response.status(400).json({ error: "Likes Cannot Be Empty" });
+  if (!body.likes || !body.title || !body.url) {
+    response
+      .status(400)
+      .json({ error: "Requires likes, title, and url to not be null" });
   } else {
     const blog = new Blog({
       title: body.title,
