@@ -8,17 +8,21 @@ blogRouter.get("/", async (request, response, next) => {
 
 blogRouter.post("/", async (request, response, next) => {
   const body = request.body;
-  const blog = new Blog({
-    title: body.title,
-    author: body.author,
-    url: body.url,
-    likes: body.likes,
-  });
-  try {
-    const savedBlog = await blog.save();
-    response.json(savedBlog);
-  } catch (exception) {
-    next(exception);
+  if (!body.likes) {
+    response.status(400).json({ error: "Likes Cannot Be Empty" });
+  } else {
+    const blog = new Blog({
+      title: body.title,
+      author: body.author,
+      url: body.url,
+      likes: body.likes,
+    });
+    try {
+      const savedBlog = await blog.save();
+      response.json(savedBlog);
+    } catch (exception) {
+      next(exception);
+    }
   }
 });
 

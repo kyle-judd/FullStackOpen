@@ -6,6 +6,7 @@ const Blog = require("../models/blog");
 const helpers = require("./test_helper");
 
 beforeEach(async () => {
+  await Blog.deleteMany({});
   const blogObjects = helpers.initialBlogs.map((blog) => new Blog(blog));
   const promiseArr = blogObjects.map((blog) => blog.save());
   await Promise.all(promiseArr);
@@ -48,6 +49,17 @@ test("A valid blog can be added", async () => {
   expect(titles).toContain("Testing in Node.js");
 });
 
+test("likes cannot be missing from blog object", async () => {
+  const newBlog = {
+    title: "Example",
+    author: "example",
+    url: "example",
+  };
+
+  await api.post("/api/blogs").send(newBlog).expect(400);
+  const blogsAtEnd = await helpers.blogsInDb();
+  expect(blogsAtEnd).toHaveLength(helpers.initialBlogs.length);
+});
 afterAll(() => {
   mongoose.connection.close();
 });
