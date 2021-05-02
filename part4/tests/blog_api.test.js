@@ -78,6 +78,30 @@ test("blog id should be id and not _id", async () => {
     expect(blog.id).toBeDefined();
   });
 });
+
+test("blog with valid id should be deleted", async () => {
+  const blogsAtStart = await helpers.blogsInDb();
+  console.log(blogsAtStart);
+  const blogToBeDeleted = blogsAtStart[0];
+  await api.delete(`/api/blogs/${blogToBeDeleted.id}`).expect(204);
+  const blogsAtEnd = await helpers.blogsInDb();
+  expect(blogsAtEnd).toHaveLength(helpers.initialBlogs.length - 1);
+  const contents = blogsAtEnd.map((blog) => blog.title);
+  expect(contents).not.toContain(blogToBeDeleted.title);
+});
+
+test("blogs likes will be updated successfully", async () => {
+  const blogsAtStart = await helpers.blogsInDb();
+  const blogToBeUpdated = blogsAtStart[0];
+  const updatedBlog = {
+    ...blogToBeUpdated,
+    likes: 100,
+  };
+  await api.put(`/api/blogs/${updatedBlog.id}`).send(updatedBlog).expect(200);
+  const blogsAtEnd = await helpers.blogsInDb();
+  const likes = blogsAtEnd.map((blog) => blog.likes);
+  expect(likes).toContain(100);
+});
 afterAll(() => {
   mongoose.connection.close();
 });
