@@ -71,6 +71,13 @@ test("title and url cannot be missing from blog object", async () => {
   const blogsAtEnd = await helpers.blogsInDb();
   expect(blogsAtEnd).toHaveLength(helpers.initialBlogs.length);
 });
+
+test("blog id should be id and not _id", async () => {
+  const blogs = await helpers.blogsInDb();
+  blogs.forEach((blog) => {
+    expect(blog.id).toBeDefined();
+  });
+});
 afterAll(() => {
   mongoose.connection.close();
 });
