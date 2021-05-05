@@ -14,18 +14,14 @@ blogRouter.post("/", async (request, response, next) => {
   if (!request.token) {
     return response.status(401).json({ error: "Token is missing or invalid" });
   }
-  const decodedToken = jwt.verify(request.token, process.env.SECRET);
-  console.log(request.token);
-  if (!decodedToken.id) {
-    return response.status(401).json({ error: "token missing or invalid" });
-  }
+
   if (!body.likes || !body.title || !body.url) {
     response
       .status(400)
       .json({ error: "Requires likes, title, and url to not be null" });
   } else {
     try {
-      const user = await User.findById(decodedToken.id);
+      const user = request.user;
       const blog = new Blog({
         title: body.title,
         author: body.author,
@@ -44,12 +40,11 @@ blogRouter.post("/", async (request, response, next) => {
 });
 
 blogRouter.delete("/:id", async (request, response, next) => {
-  const decodedToken = jwt.verify(request.token, process.env.SECRET);
-  if (!request.token || !decodedToken.id) {
-    return response.status(401).json({ error: "token missing or invalid" });
+  if (!request.token) {
+    return response.status(401).json({ error: "Token is missing or invalid" });
   }
   try {
-    const user = await User.findById(decodedToken.id);
+    const user = request.user;
     const blog = await Blog.findById(request.params.id);
     if (user.id === blog.user.id) {
       await Blog.findByIdAndRemove(blog.id);

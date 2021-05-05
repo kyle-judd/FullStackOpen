@@ -1,4 +1,7 @@
 const logger = require("./logger");
+const mongoose = require("mongoose");
+const User = require("../models/user");
+const jwt = require("jsonwebtoken");
 
 const requestLogger = (request, response, next) => {
   logger.info("Method:", request.method);
@@ -32,6 +35,16 @@ const errorHandler = (error, request, response, next) => {
   next(error);
 };
 
+const userExtractor = async (req, res, next) => {
+  const decodedToken = jwt.verify(req.token, process.env.SECRET);
+  if (!decodedToken.id) {
+    return res.status(401).json({ error: "Token missing or invalid" });
+  }
+  req.user = await User.findById(decodedToken.id);
+  logger.info(req.user);
+  next();
+};
+
 const getTokenFrom = (req, res, next) => {
   const auth = req.get("authorization");
   if (auth && auth.toLowerCase().startsWith("bearer")) {
@@ -45,4 +58,5 @@ module.exports = {
   unknownEndpoint,
   errorHandler,
   getTokenFrom,
+  userExtractor,
 };
